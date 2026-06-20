@@ -7,7 +7,7 @@ A RESTful API backend for managing hospital operations — built with **Django**
 ### Prerequisites
 
 - Python 3.14 or higher
-- MySQL Server running locally
+- PostgreSQL Server running locally
 - `pip` package manager
 - Git
 
