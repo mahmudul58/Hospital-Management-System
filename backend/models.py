@@ -10,6 +10,11 @@ class User(AbstractUser):
     )
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='patient')
 
+    def save(self, *args, **kwargs):
+        if self.is_superuser: 
+            self.role = 'admin' 
+        super().save(*args, **kwargs)
+
 
 
 class Doctor(models.Model):
