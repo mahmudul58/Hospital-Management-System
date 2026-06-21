@@ -16,13 +16,10 @@ urlpatterns = router.urls
 urlpatterns = [
     path('',include(router.urls)),
     path('doctor-available/',views.DoctorAvailabilityView.as_view(),name='doctor-available'),
-    path('dr-reg/',views.DoctorRegisterView.as_view(),name='dr-reg'),
+    path('doctor-reg/',views.DoctorRegisterView.as_view(),name='doctor-reg'),
     path('patient-reg/',views.PatientRegisterView.as_view(),name='patient-reg'),
     path('receptionist-reg/',views.ReceptionistRegisterView.as_view(),name='receptionist-reg'),
     path('login/',views.LoginView.as_view(),name='login'),
     path('prescription-create/',views.PrescriptionCreateView.as_view(),name='prescription-create'),
     path('prescription-list/',views.PrescriptionListView.as_view(),name='prescription-list'),
-    path('prescription-medicine/',views.PrescriptionMedicineCreateView.as_view(),name='prescription-medicine'),
-    path('prescription-medicine-list/',views.PrescriptionMedicineListView.as_view(),name='prescription-medicine-list'),
-
 ]

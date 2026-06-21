@@ -211,24 +211,39 @@ class AppointmentSerializer(serializers.ModelSerializer):
 
 
 class PrescriptionMedicineSerializer(serializers.ModelSerializer):
-    dosage = serializers.CharField(required=True)
-    duration = serializers.CharField(required=True)
     medicine_name = serializers.ReadOnlyField(source="medicine.name")
 
     class Meta:
         model = PrescriptionMedicine
-        fields = "__all__"
+        fields = ['id', 'prescription', 'medicine', 'medicine_name', 'dosage', 'duration']
+        extra_kwargs = {
+            'prescription': {'required': False}
+        }
 
 
 class PrescriptionSerializer(serializers.ModelSerializer):
 
     appointment = serializers.PrimaryKeyRelatedField(
-        queryset=Appointment.objects.filter(status='confirmed')
+        queryset=Appointment.objects.filter(status='Confirmed')
     )
+    medicines = PrescriptionMedicineSerializer(many=True, write_only=True, required=False)
+    prescription_medicines = PrescriptionMedicineSerializer(source='prescriptionmedicine_set', many=True, read_only=True)
 
     class Meta:
         model = Prescription
-        fields = "__all__"
+        fields = ['id', 'appointment', 'diagnosis', 'notes', 'created_at', 'medicines', 'prescription_medicines']
+
+    def create(self, validated_data):
+        medicines_data = validated_data.pop('medicines', [])
+        prescription = Prescription.objects.create(**validated_data)
+        for med in medicines_data:
+            PrescriptionMedicine.objects.create(
+                prescription=prescription,
+                medicine=med['medicine'],
+                dosage=med['dosage'],
+                duration=med['duration']
+            )
+        return prescription
 
 
 class MedicineSerializer(serializers.ModelSerializer):

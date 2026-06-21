@@ -5,6 +5,8 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework import viewsets
 from rest_framework.views import APIView
+from rest_framework.filters import SearchFilter
+from django_filters.rest_framework import DjangoFilterBackend
 
 from backend.serializers import (
     UserSerializer,
@@ -106,7 +108,6 @@ class LoginView(APIView):
         )
 
 
-
 class DepartmentViewSet(viewsets.ModelViewSet):
     queryset = Department.objects.all()
     serializer_class = DepartmentSerializer
@@ -118,23 +119,17 @@ class AppointmentViewSet(viewsets.ModelViewSet):
     serializer_class = AppointmentSerializer
     permission_classes = [IsAdminOrReceptionist]
 
-    def get_queryset(self):
-        queryset = Appointment.objects.all()
-        
-        doctor_id = self.request.query_params.get('doctor')
-        patient_id = self.request.query_params.get('patient')
-        date_param = self.request.query_params.get('date')
-
-        if doctor_id:
-            queryset = queryset.filter(doctor_id=doctor_id)
-            
-        if patient_id:
-            queryset = queryset.filter(patient_id=patient_id)
-            
-        if date_param:
-            queryset = queryset.filter(date=date_param) # আপনার মডেলে ফিল্ডের নাম 'date' হলে
-
-        return queryset
+    #filtering
+    filter_backends = [DjangoFilterBackend,SearchFilter]
+    filterset_fields = ['doctor', 'patient', 'status']
+    search_fields = [
+        'doctor__user__first_name', 
+        'doctor__user__last_name',
+        'doctor__user__username',
+        'patient__user__first_name', 
+        'patient__user__last_name',
+        'patient__user__username'
+    ]
 
 
 class PrescriptionCreateView(generics.CreateAPIView):
@@ -147,28 +142,14 @@ class PrescriptionListView(generics.ListAPIView):
     serializer_class = PrescriptionSerializer
     permission_classes = [IsAuthenticated]
 
-class PrescriptionMedicineCreateView(generics.CreateAPIView):
-    queryset = PrescriptionMedicine.objects.all()
-    serializer_class = PrescriptionMedicineSerializer
-    permission_classes = [IsDoctorUser]
-
-class PrescriptionMedicineListView(generics.ListAPIView):
-    queryset = PrescriptionMedicine.objects.all()
-    serializer_class = PrescriptionMedicineSerializer
-    permission_classes = [IsAuthenticated]
-
 class MedicineListViewSet(viewsets.ModelViewSet):
     queryset = Medicine.objects.all()
     serializer_class = MedicineSerializer
     permission_classes = [IsAdminOrReceptionist]
 
-    # filter/search
-
-    def get_queryset(self):
-        queryset = Medicine.objects.all()        
-        medicine = self.request.query_params.get('medicine')
-        queryset = queryset.filter(name=medicine)
-        return queryset
+    # searching
+    filter_backends = [SearchFilter]
+    search_fields = ['name', 'description']
 
 class BillListViewSet(viewsets.ModelViewSet):
     queryset = Bill.objects.all()

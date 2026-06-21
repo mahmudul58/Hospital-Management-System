@@ -101,3 +101,42 @@ python manage.py runserver
 Visit: [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
 
 Django Admin Panel: [http://127.0.0.1:8000/admin/](http://127.0.0.1:8000/admin/)
+
+---
+
+## 🔗 API Endpoint Reference (Quick Links)
+
+Here is a quick overview of all the available API routes and the specific user roles required to access them.
+
+### 🔐 Authentication & Registration
+| Endpoint | Method | Required Role / Permission | Description |
+|---|---|---|---|
+| `/login/` | `POST` | **Any** | Login to receive JWT Tokens |
+| `/patient-reg/` | `POST` | **Any** | Register a new Patient profile |
+| `/doctor-reg/` | `POST` | **Admin, Receptionist** | Register a new Doctor profile |
+| `/receptionist-reg/` | `POST` | **Admin** | Register a new Receptionist profile |
+
+### 👨‍⚕️ Doctors & Patients
+| Endpoint | Method | Required Role / Permission | Description |
+|---|---|---|---|
+| `/doctor-available/` | `GET` | **Any** | View a list of available doctors |
+| `/doctor-list/` | `GET, POST, PUT, DELETE` | **Authenticated Users** | Manage and view doctors |
+| `/patient-list/` | `GET, POST, PUT, DELETE` | **Authenticated Users** | Manage and view patients |
+
+### 🏥 Departments & Appointments
+| Endpoint | Method | Required Role / Permission | Description |
+|---|---|---|---|
+| `/department/` | `GET, POST, PUT, DELETE` | **Admin, Receptionist** | Manage hospital departments |
+| `/appointment/` | `GET, POST, PUT, DELETE` | **Admin, Receptionist** | Manage appointments (Supports `?search=` and filters) |
+
+### 💊 Prescriptions & Medicines
+| Endpoint | Method | Required Role / Permission | Description |
+|---|---|---|---|
+| `/prescription-create/` | `POST` | **Doctor** | Create a prescription with nested medicines |
+| `/prescription-list/` | `GET` | **Authenticated Users** | View a list of all prescriptions |
+| `/medicine/` | `GET, POST, PUT, DELETE` | **Admin, Receptionist** | Manage the medicine inventory (Supports `?search=`) |
+
+### 🧾 Billing
+| Endpoint | Method | Required Role / Permission | Description |
+|---|---|---|---|
+| `/bill/` | `GET, POST, PUT, DELETE` | **Admin, Receptionist** | Generate and manage patient bills |
