@@ -41,37 +41,32 @@ pip install -r requirements.txt
 
 ## 🗄 Database Configuration
 
-### Step 1 — Create the MySQL Database
+### Step 1 — Create the PostgreSQL Database
 
-Open your MySQL client (Workbench, CLI, or phpMyAdmin) and run:
+Open your PostgreSQL client (pgAdmin or psql) and run:
 
 ```sql
-CREATE DATABASE hms_db;
+CREATE DATABASE hms_db_8;
 ```
 
 ### Step 2 — Configure `HMS/settings.py`
 
-Find the `DATABASES` section and update it with your MySQL credentials:
+Find the `DATABASES` section and update it with your PostgreSQL credentials:
 
 ```python
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'hms_db',          # your database name
-        'USER': 'root',            # your MySQL username
-        'PASSWORD': 'yourpassword',# your MySQL password
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'hms_db_8',          # your database name
+        'USER': 'postgres',          # your PostgreSQL username
+        'PASSWORD': '',              # your PostgreSQL password
         'HOST': 'localhost',
-        'PORT': '3306',
+        'PORT': '5432',
     }
 }
 ```
 
-> **Note:** This project uses `PyMySQL` as the MySQL driver. Make sure the following is present at the top of `HMS/__init__.py`:
->
-> ```python
-> import pymysql
-> pymysql.install_as_MySQLdb()
-> ```
+> **Note:** This project uses the PostgreSQL driver. Ensure that `psycopg2` or `psycopg2-binary` is installed via your `requirements.txt`.
 
 ### Step 3 — Apply Migrations (Create Tables)
 
@@ -80,7 +75,7 @@ python manage.py makemigrations
 python manage.py migrate
 ```
 
-This will automatically create all required tables in your `hms_db` database.
+This will automatically create all required tables in your `hms_db_8` database.
 
 ### Step 4 — Create a Superuser (Admin)
 
